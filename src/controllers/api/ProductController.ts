@@ -1,34 +1,22 @@
 import express from 'express'
-import data from '../../../database/database.json'
+
 import { Product, ProductNoID } from '../../models/Product'
 import { v4 } from 'uuid'
 import { writeFileSync } from 'fs'
+import { findByID, getAll, saveData } from '../../services/ProductServices'
 
 export const router = express.Router()
 
 //@Get All
-router.get('/', (req, res) => {
-    if (data.products) {
-        res.status(200).json(data.products)
+router.get('/', async (req, res) => {
+    const products = await getAll()
+    if (products) {
+        res.status(200).json(products)
     } else {
         res.status(404).json('There are no products')
     }
 
 })
-
-
-const findByID = async (id: string): Promise<Product | undefined> => {
-    return new Promise((resolve, reject) => {
-        const product = data.products.find((par) => {
-            return par.id === id
-        })
-
-        resolve(product)
-
-
-    })
-}
-
 
 //@Get by ID
 router.get('/:id', async (req, res) => {
@@ -83,7 +71,9 @@ router.put('/:id', async (req, res) => {
             description: newProduct.description || oldProduct.description,
             price: newProduct.price || oldProduct.price
         }
-        const updatedProducts = data.products.map((par) => {
+
+        const products = await getAll()
+        const updatedProducts = products.map((par) => {
             if (par.id === req.params.id) {
                 return updProduct
             }
@@ -92,7 +82,7 @@ router.put('/:id', async (req, res) => {
 
         data.products = updatedProducts
 
-        writeFileSync('./database/database.json', JSON.stringify(data))
+        await saveData()
 
         res.status(200).json(updProduct)
     } else {
