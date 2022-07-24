@@ -3,6 +3,11 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "nodemonConfig": {
+    "ignore": [
+      "./database.json"
+    ]
+  },
   "scripts": {
     "start": "ts-node server.ts",
     "dev": "nodemon server.ts",
@@ -22,6 +27,7 @@
     "uuid": "^8.3.2"
   },
   "dependencies": {
+    "express-async-handler": "^1.2.0",
     "moment": "^2.29.4"
   }
 }

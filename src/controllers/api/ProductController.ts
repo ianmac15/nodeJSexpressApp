@@ -1,15 +1,14 @@
 import express from 'express'
-
+import data from '../../../database.json'
 import { Product, ProductNoID } from '../../models/Product'
 import { v4 } from 'uuid'
-import { writeFileSync } from 'fs'
 import { findByID, getAll, saveData } from '../../services/ProductServices'
 
 export const router = express.Router()
 
 //@Get All
 router.get('/', async (req, res) => {
-    const products = await getAll()
+    const products = await getAll(data.products)
     if (products) {
         res.status(200).json(products)
     } else {
@@ -21,7 +20,7 @@ router.get('/', async (req, res) => {
 //@Get by ID
 router.get('/:id', async (req, res) => {
     // const id = getRequestID(req)
-    const product = await findByID(req.params.id)
+    const product = await findByID(req.params.id, data.products)
 
     if (product) {
         res.status(200).json(product)
@@ -31,7 +30,7 @@ router.get('/:id', async (req, res) => {
 })
 
 //@Create product
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
 
     const newProduct: Product = {
         id: v4(),
@@ -46,8 +45,9 @@ router.post('/', (req, res) => {
 
 
     if (newProduct.description && newProduct.name && newProduct.price) {
-        data.products.push(newProduct)
-        writeFileSync('./database/database.json', JSON.stringify(data))
+        const products = await getAll(data.products)
+        products.push(newProduct)
+        await saveData(data, data.products, products)
         res.status(201).json(newProduct)
     } else {
         res.status(400).json('Enter a valid  product')
@@ -62,7 +62,7 @@ router.put('/:id', async (req, res) => {
         price: req.body.price
     }
 
-    const oldProduct = await findByID(req.params.id)
+    const oldProduct = await findByID(req.params.id, data.products)
 
     if (oldProduct) {
         const updProduct: Product = {
@@ -72,7 +72,7 @@ router.put('/:id', async (req, res) => {
             price: newProduct.price || oldProduct.price
         }
 
-        const products = await getAll()
+        const products = await getAll(data.products)
         const updatedProducts = products.map((par) => {
             if (par.id === req.params.id) {
                 return updProduct
@@ -80,9 +80,8 @@ router.put('/:id', async (req, res) => {
             return par
         })
 
-        data.products = updatedProducts
 
-        await saveData()
+        await saveData(data, data.products, updatedProducts)
 
         res.status(200).json(updProduct)
     } else {
@@ -92,18 +91,18 @@ router.put('/:id', async (req, res) => {
 
 //@Delete product
 router.delete('/:id', async (req, res) => {
-    const delProduct = await findByID(req.params.id)
+    const delProduct = await findByID(req.params.id, data.products)
 
     if (delProduct) {
-        const newProducts = data.products.filter((par) => {
+        const products = await getAll(data.products)
+        const newProducts = products.filter((par) => {
             if (par.id !== req.params.id) {
                 return par
             }
         })
 
-        data.products = newProducts
-
-        writeFileSync('./database/database.json', JSON.stringify(data))
+        
+        await saveData(data, data.products, newProducts)
 
         res.status(200).json()
     } else {

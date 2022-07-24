@@ -1,6 +1,5 @@
 import express, { urlencoded } from 'express'
 import path from 'path'
-import data from './database/database.json'
 import { getRequestID } from './middleare/getReqeustData'
 import { logger } from './middleare/logger'
 import { router } from './src/controllers/api/ProductController'
