@@ -3,13 +3,18 @@ import path from 'path'
 import { getRequestID } from './middleare/getReqeustData'
 import { logger } from './middleare/logger'
 import { router } from './src/controllers/api/ProductController'
+import dotenv from 'dotenv'
+import { connectDB } from './src/config/db'
 
+dotenv.config()
 
+connectDB()
 const app = express()
 
 // app.get('/', (req, res)=>{
 //     res.sendFile(path.join(__dirname, 'public', 'index.html'))
 // })
+
 
 
 app.use(express.json())

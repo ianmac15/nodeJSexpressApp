@@ -1,8 +1,9 @@
 import express from 'express'
 import data from '../../../database.json'
-import { Product, ProductNoID } from '../../models/Product'
+import { IProduct, ProductNoID } from '../../types'
 import { v4 } from 'uuid'
 import { findByID, getAll, saveData } from '../../services/ProductServices'
+import {Product} from '../../models/ProductModel'
 
 export const router = express.Router()
 
@@ -32,7 +33,7 @@ router.get('/:id', async (req, res) => {
 //@Create product
 router.post('/', async (req, res) => {
 
-    const newProduct: Product = {
+    const newProduct: IProduct = {
         id: v4(),
         name: req.body.name,
         description: req.body.description,
@@ -65,7 +66,7 @@ router.put('/:id', async (req, res) => {
     const oldProduct = await findByID(req.params.id, data.products)
 
     if (oldProduct) {
-        const updProduct: Product = {
+        const updProduct: IProduct = {
             id: oldProduct.id,
             name: newProduct.name || oldProduct.name,
             description: newProduct.description || oldProduct.description,
