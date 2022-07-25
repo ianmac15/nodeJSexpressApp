@@ -2,14 +2,15 @@ import express from 'express'
 import data from '../../../database.json'
 import { IProduct, ProductNoID } from '../../types'
 import { v4 } from 'uuid'
-import { findByID, getAll, saveData } from '../../services/ProductServices'
+import { getAll, saveData } from '../../services/ProductServices'
 import {Product} from '../../models/ProductModel'
 
 export const router = express.Router()
 
 //@Get All
 router.get('/', async (req, res) => {
-    const products = await getAll(data.products)
+    // const products = await getAll(data.products)
+    const products = await Product.find()
     if (products) {
         res.status(200).json(products)
     } else {
@@ -20,8 +21,9 @@ router.get('/', async (req, res) => {
 
 //@Get by ID
 router.get('/:id', async (req, res) => {
-    // const id = getRequestID(req)
-    const product = await findByID(req.params.id, data.products)
+    
+    // const product = await findByID(req.params.id, data.products)
+    const product = await Product.findById(req.params.id)
 
     if (product) {
         res.status(200).json(product)
@@ -34,7 +36,6 @@ router.get('/:id', async (req, res) => {
 router.post('/', async (req, res) => {
 
     const newProduct: IProduct = {
-        id: v4(),
         name: req.body.name,
         description: req.body.description,
         price: req.body.price
@@ -46,10 +47,11 @@ router.post('/', async (req, res) => {
 
 
     if (newProduct.description && newProduct.name && newProduct.price) {
-        const products = await getAll(data.products)
-        products.push(newProduct)
-        await saveData(data, data.products, products)
-        res.status(201).json(newProduct)
+        // const products = await getAll(data.products)
+        // products.push(newProduct)
+        // await saveData(data, data.products, products)
+        const product = await Product.create(newProduct)
+        res.status(201).json(product)
     } else {
         res.status(400).json('Enter a valid  product')
     }
@@ -57,34 +59,36 @@ router.post('/', async (req, res) => {
 
 //@Update product
 router.put('/:id', async (req, res) => {
-    const newProduct: ProductNoID = {
+    const newProduct: IProduct= {
         name: req.body.name,
         description: req.body.description,
         price: req.body.price
     }
 
-    const oldProduct = await findByID(req.params.id, data.products)
+    // const oldProduct = await findByID(req.params.id, data.products)
+    const oldProduct = await Product.findById(req.params.id)
 
     if (oldProduct) {
         const updProduct: IProduct = {
-            id: oldProduct.id,
             name: newProduct.name || oldProduct.name,
             description: newProduct.description || oldProduct.description,
             price: newProduct.price || oldProduct.price
         }
 
-        const products = await getAll(data.products)
-        const updatedProducts = products.map((par) => {
-            if (par.id === req.params.id) {
-                return updProduct
-            }
-            return par
-        })
+        const product = await Product.findByIdAndUpdate(req.params.id, updProduct)
+
+        // const products = await getAll(data.products)
+        // const updatedProducts = products.map((par) => {
+        //     if (par.id === req.params.id) {
+        //         return updProduct
+        //     }
+        //     return par
+        // })
 
 
-        await saveData(data, data.products, updatedProducts)
+        // await saveData(data, data.products, updatedProducts)
 
-        res.status(200).json(updProduct)
+        res.status(200).json(product)
     } else {
         res.status(400).json(`There is no product with id: ${req.params.id}`)
     }
@@ -92,20 +96,21 @@ router.put('/:id', async (req, res) => {
 
 //@Delete product
 router.delete('/:id', async (req, res) => {
-    const delProduct = await findByID(req.params.id, data.products)
+    // const delProduct = await findByID(req.params.id, data.products)
+    const delProduct = await Product.findByIdAndDelete(req.params.id)
 
     if (delProduct) {
-        const products = await getAll(data.products)
-        const newProducts = products.filter((par) => {
-            if (par.id !== req.params.id) {
-                return par
-            }
-        })
+    //     const products = await getAll(data.products)
+    //     const newProducts = products.filter((par) => {
+    //         if (par.id !== req.params.id) {
+    //             return par
+    //         }
+    //     })
 
         
-        await saveData(data, data.products, newProducts)
+    //     await saveData(data, data.products, newProducts)
 
-        res.status(200).json()
+        res.status(200).json({id: req.params.id})
     } else {
         res.status(400).json(`There is no product with id: ${req.params.id}`)
     }
