@@ -12,8 +12,10 @@ declare global {
 
 export interface IProduct {
     name: string
-    description: string
+    category: string
     price: number
+    inStock: boolean
+    image: string
 }
 
 export interface ProductNoID {

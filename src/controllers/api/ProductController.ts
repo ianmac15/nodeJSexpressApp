@@ -1,11 +1,21 @@
-import express from 'express'
 import data from '../../../database.json'
 import { IProduct, ProductNoID } from '../../types'
 import { v4 } from 'uuid'
-import { getAll, saveData } from '../../services/ProductServices'
 import {Product} from '../../models/ProductModel'
+import express, { urlencoded } from 'express'
+import { connectDB } from '../../config/db'
+import dotenv from 'dotenv'
 
-export const router = express.Router()
+
+
+
+
+const app = express()
+app.use(express.json())
+app.use(express.urlencoded({extended:false}))
+const router = express.Router()
+
+
 
 //@Get All
 router.get('/', async (req, res) => {
@@ -37,8 +47,10 @@ router.post('/', async (req, res) => {
 
     const newProduct: IProduct = {
         name: req.body.name,
-        description: req.body.description,
-        price: req.body.price
+        category: req.body.category,
+        price: req.body.price,
+        inStock: req.body.inStock,
+        image: req.body.image
     }
     // if (req.body) {
     //     newProduct = { id: v4(), ...req.body }
@@ -46,7 +58,7 @@ router.post('/', async (req, res) => {
 
 
 
-    if (newProduct.description && newProduct.name && newProduct.price) {
+    if (newProduct.category && newProduct.name && newProduct.price) {
         // const products = await getAll(data.products)
         // products.push(newProduct)
         // await saveData(data, data.products, products)
@@ -61,8 +73,10 @@ router.post('/', async (req, res) => {
 router.put('/:id', async (req, res) => {
     const newProduct: IProduct= {
         name: req.body.name,
-        description: req.body.description,
-        price: req.body.price
+        category: req.body.category,
+        price: req.body.price,
+        inStock: req.body.inStock,
+        image: req.body.image
     }
 
     // const oldProduct = await findByID(req.params.id, data.products)
@@ -71,8 +85,10 @@ router.put('/:id', async (req, res) => {
     if (oldProduct) {
         const updProduct: IProduct = {
             name: newProduct.name || oldProduct.name,
-            description: newProduct.description || oldProduct.description,
-            price: newProduct.price || oldProduct.price
+            category: newProduct.category || oldProduct.category,
+            price: newProduct.price || oldProduct.price,
+            inStock: newProduct.inStock || oldProduct.inStock,
+            image: newProduct.image || oldProduct.image
         }
 
         const product = await Product.findByIdAndUpdate(req.params.id, updProduct)

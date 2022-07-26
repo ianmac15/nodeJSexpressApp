@@ -9,7 +9,7 @@ import { connectDB } from './src/config/db'
 dotenv.config()
 
 connectDB()
-const app = express()
+
 
 // app.get('/', (req, res)=>{
 //     res.sendFile(path.join(__dirname, 'public', 'index.html'))
@@ -17,16 +17,15 @@ const app = express()
 
 
 
-app.use(express.json())
-app.use(express.urlencoded({extended:false}))
+
 
 //init middleware
 // app.use(logger)
 
 //Set static folder
-app.use(express.static(path.join(__dirname,'public')))
+// app.use(express.static(path.join(__dirname,'public')))
 
-app.use('/api/products', router)
+// app.use('/api/products', router)
 
 // //@Get All
 // app.get('/api/products', (req, res) => {
