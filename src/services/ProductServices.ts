@@ -1,11 +1,8 @@
 import { Model } from "mongoose"
-import { connectDB } from "../config/db"
 import { IProduct, ProductServices } from "../Interfaces"
 
 
-export const Services = async (databaseModel: Model<IProduct>): Promise<ProductServices> => {
-
-    connectDB()
+export const Services = (databaseModel: Model<IProduct>): ProductServices => {
 
     const getAllProducts = async () => { return await databaseModel.find()}
     const getProductByID = async(id: any) => {return await databaseModel.findById(id)}

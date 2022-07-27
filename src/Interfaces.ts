@@ -20,11 +20,6 @@ export interface IProduct {
     image: string
 }
 
-export interface ProductNoID {
-    name: string
-    description: string
-    price: number
-}
 
 export interface ProductServices {
     getAllProducts:(par: void) => Promise<IProduct[]>
