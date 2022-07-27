@@ -1,6 +1,6 @@
 import {Schema, model, connect} from "mongoose";
 import { runInContext } from "vm";
-import { IProduct } from "../types";
+import { IProduct } from "../Interfaces";
 
 const productSchema = new Schema<IProduct>({
     name:{type: String, required:true},

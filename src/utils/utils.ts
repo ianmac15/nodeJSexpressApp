@@ -1,4 +1,4 @@
-import { IProduct } from "../types"
+import { IProduct } from "../Interfaces"
 import { writeFileSync } from "fs"
 
 // export const findByID = async (id: string, products:IProduct[] ): Promise<IProduct | undefined> => {

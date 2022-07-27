@@ -10,7 +10,11 @@ dotenv.config()
 
 connectDB()
 
-
+const app = express()
+app.use(express.json())
+app.use(express.urlencoded({ extended: false }))
+const router = express.Router()
+app.use('/api/products', router)
 // app.get('/', (req, res)=>{
 //     res.sendFile(path.join(__dirname, 'public', 'index.html'))
 // })
@@ -34,7 +38,7 @@ connectDB()
 //     } else {
 //         res.status(404).json('There are no products')
 //     }
-    
+
 // })
 
 // //@Get by ID
@@ -50,9 +54,9 @@ connectDB()
 //     } else {
 //         res.status(400).json(`There is no product with id: ${id}`)
 //     }
-    
+
 // })
 
 
 const PORT = process.env.PORT || 7000
-app.listen(PORT, ()=>{console.log(`Server running on port ${PORT}`)})
+app.listen(PORT, () => { console.log(`Server running on port ${PORT}`) })
