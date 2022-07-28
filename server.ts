@@ -1,6 +1,4 @@
 import express from 'express'
-
-// import { router } from './src/controllers/api/ProductController'
 import dotenv from 'dotenv'
 import { connectDB } from './src/config/db'
 import { ProductController } from './src/controllers/api/ProductController'

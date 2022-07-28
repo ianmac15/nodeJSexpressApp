@@ -1,4 +1,4 @@
-import { Types } from "mongoose"
+import { Model, Types } from "mongoose"
 
 export {}
 
@@ -27,4 +27,8 @@ export interface ProductServices {
     createProduct: (par: IProduct) => Promise<void>
     updateProduct: (id: any, par: IProduct) => Promise<void>
     deleteProduct: (id: any) => Promise<(IProduct & {_id: Types.ObjectId;}) | null>
+}
+
+export interface IServices {
+    (databaseModel: Model<IProduct>): ProductServices
 }
