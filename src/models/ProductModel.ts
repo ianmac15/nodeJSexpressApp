@@ -1,5 +1,4 @@
 import {Schema, model, connect} from "mongoose";
-import { runInContext } from "vm";
 import { IProduct } from "../types";
 
 const productSchema = new Schema<IProduct>({

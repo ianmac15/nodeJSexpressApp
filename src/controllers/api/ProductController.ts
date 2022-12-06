@@ -58,7 +58,12 @@ router.post('/', async (req, res) => {
 
 
 
+<<<<<<< Updated upstream
     if (newProduct.category && newProduct.name && newProduct.price) {
+=======
+    if (newProduct.category && newProduct.name && newProduct.price
+        && newProduct.inStock && newProduct.image) {
+>>>>>>> Stashed changes
         // const products = await getAll(data.products)
         // products.push(newProduct)
         // await saveData(data, data.products, products)
